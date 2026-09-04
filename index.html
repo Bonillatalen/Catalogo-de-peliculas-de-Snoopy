@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo de Películas de Snoopy</title>
+<meta name="description" content="Catálogo de las películas de Snoopy y la pandilla de Peanuts, de 1969 a la era Apple TV+." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #f7efd8;
+    --paper-strong: #f1e6c4;
+    --ink: #201a17;
+    --ink-soft: #5a4d43;
+    --red: #d6362c;
+    --red-dark: #a9241c;
+    --blue: #2f6fa8;
+    --yellow: #f2b705;
+    --green: #4c7a4c;
+    --border-w: 3px;
+  }
+  html.dark{
+    --paper: #17140f;
+    --paper-strong: #201b14;
+    --ink: #f4ecd8;
+    --ink-soft: #cabfa9;
+    --red: #ef5b50;
+    --blue: #6fa8d8;
+    --yellow: #f2b705;
+    --green: #7fae7f;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Work Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.55;
+    transition:background .3s ease, color .3s ease;
+  }
+  h1,h2,h3,.display{
+    font-family:"Fredoka", ui-sans-serif, sans-serif;
+    font-weight:600;
+    letter-spacing:.2px;
+    margin:0;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding-inline:20px;}
+
+  /* faint halftone texture used behind hero + section headers */
+  .halftone{
+    background-image:radial-gradient(var(--ink) 1px, transparent 1.4px);
+    background-size:14px 14px;
+    opacity:.08;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:var(--paper);
+    border-bottom:var(--border-w) solid var(--ink);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 0;
+  }
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
+  .brand-mark{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--red);
+    border:var(--border-w) solid var(--ink);
+    position:relative;flex:none;
+  }
+  .brand-mark::after{
+    content:"";position:absolute;inset:8px;
+    border-radius:50%;background:var(--yellow);
+  }
+  .brand-name{font-size:1.25rem;font-weight:700;}
+  .nav-links{display:flex;gap:22px;font-size:.95rem;font-weight:500;list-style:none;margin:0;padding:0;}
+  .nav-links a{text-decoration:none;border-bottom:2px solid transparent;padding-bottom:2px;}
+  .nav-links a:hover{border-color:var(--red);}
+  .theme-btn{
+    display:flex;align-items:center;gap:8px;
+    background:transparent;border:var(--border-w) solid var(--ink);
+    border-radius:999px;padding:7px 14px;font-size:.85rem;font-weight:600;color:var(--ink);
+  }
+  .theme-btn:hover{background:var(--yellow);}
+  .nav-toggle{display:none;background:none;border:var(--border-w) solid var(--ink);border-radius:8px;padding:6px 10px;}
+
+  @media (max-width:760px){
+    .nav-links{
+      position:absolute;top:100%;left:0;right:0;
+      flex-direction:column;gap:0;background:var(--paper);
+      border-bottom:var(--border-w) solid var(--ink);
+      max-height:0;overflow:hidden;
+    }
+    .nav-links.open{max-height:300px;}
+    .nav-links li{border-top:1px solid color-mix(in srgb, var(--ink) 15%, transparent);}
+    .nav-links a{display:block;padding:14px 20px;}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:64px 0 56px;}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;}
+  .hero .halftone{position:absolute;inset:0;z-index:-1;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
+  @media (max-width:820px){.hero-grid{grid-template-columns:1fr;}}
+
+  .kicker-tag{
+    display:inline-block;background:var(--red);color:#fff;
+    border:var(--border-w) solid var(--ink);border-radius:6px;
+    padding:4px 12px;font-family:"Fredoka";font-weight:600;font-size:.85rem;
+    transform:rotate(-2deg);
+  }
+  .hero h1{font-size:clamp(2.4rem, 5vw, 3.6rem);margin-top:16px;line-height:1.05;}
+  .hero p.lede{margin-top:16px;font-size:1.1rem;color:var(--ink-soft);max-width:46ch;}
+
+  .speech-bubble{
+    position:relative;
+    background:#fff;color:var(--ink);
+    border:var(--border-w) solid var(--ink);
+    border-radius:22px;
+    padding:22px 24px;
+    font-family:"Fredoka";font-size:1.05rem;
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  html.dark .speech-bubble{background:var(--paper-strong);}
+  .speech-bubble::after{
+    content:"";position:absolute;left:36px;bottom:-22px;
+    width:0;height:0;
+    border:14px solid transparent;
+    border-top-color:var(--ink);
+  }
+  .speech-bubble::before{
+    content:"";position:absolute;left:39px;bottom:-16px;
+    width:0;height:0;
+    border:11px solid transparent;
+    border-top-color:#fff;
+    z-index:1;
+  }
+  html.dark .speech-bubble::before{border-top-color:var(--paper-strong);}
+
+  .hero-panel{
+    border:var(--border-w) solid var(--ink);
+    border-radius:14px;
+    background:linear-gradient(160deg, var(--blue), var(--green));
+    aspect-ratio:4/3;
+    display:grid;place-items:center;
+    box-shadow:8px 8px 0 var(--ink);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-panel .rays{
+    position:absolute;inset:-20%;
+    background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.16) 0deg 8deg, transparent 8deg 16deg);
+  }
+  .hero-panel .doghouse{
+    position:relative;width:58%;
+    filter:drop-shadow(4px 6px 0 rgba(0,0,0,.25));
+  }
+
+  /* ---------- section headings ---------- */
+  .section{padding:56px 0;}
+  .section-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;margin-bottom:8px;
+  }
+  .section-head h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+  .section-sub{color:var(--ink-soft);margin-top:6px;max-width:60ch;}
+  .stripe{
+    height:8px;width:64px;background:var(--red);border-radius:4px;margin-top:14px;margin-bottom:26px;
+  }
+
+  /* ---------- filters ---------- */
+  .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
+  .filter-btn{
+    border:var(--border-w) solid var(--ink);border-radius:999px;
+    background:transparent;color:var(--ink);
+    padding:7px 16px;font-weight:600;font-size:.88rem;
+  }
+  .filter-btn.active{background:var(--ink);color:var(--paper);}
+
+  /* ---------- movie grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));gap:26px;}
+  .panel{
+    border:var(--border-w) solid var(--ink);
+    border-radius:10px;
+    background:var(--paper-strong);
+    box-shadow:5px 5px 0 var(--ink);
+    overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .panel:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink);}
+  .panel-top{
+    position:relative;padding:22px 20px 46px;color:#fff;
+    border-bottom:var(--border-w) solid var(--ink);
+  }
+  .panel-top .halftone{position:absolute;inset:0;filter:invert(1);opacity:.14;}
+  .panel-top .year{font-family:"Fredoka";font-size:2.2rem;font-weight:700;position:relative;}
+  .panel-top .badge{
+    position:absolute;right:16px;top:18px;
+    background:rgba(0,0,0,.28);
+    border:1.5px solid rgba(255,255,255,.7);
+    border-radius:999px;padding:3px 11px;font-size:.72rem;font-weight:600;
+  }
+  .panel-body{padding:18px 20px 22px;}
+  .panel-body h3{font-size:1.15rem;margin-bottom:8px;}
+  .panel-body p{margin:0;color:var(--ink-soft);font-size:.92rem;}
+  .panel-meta{margin-top:12px;font-size:.8rem;color:var(--ink-soft);display:flex;gap:10px;flex-wrap:wrap;}
+  .panel-meta span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;}
+
+  /* era colors */
+  .era-clasica .panel-top{background:var(--blue);}
+  .era-3d .panel-top{background:var(--red);}
+  .era-streaming .panel-top{background:var(--green);}
+
+  /* ---------- timeline / franquicia info ---------- */
+  .facts{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  @media (max-width:700px){.facts{grid-template-columns:1fr;}}
+  .fact{
+    border:var(--border-w) solid var(--ink);border-radius:10px;
+    padding:20px;background:var(--paper-strong);
+  }
+  .fact .num{font-family:"Fredoka";font-size:2rem;color:var(--red);}
+  .fact p{margin:6px 0 0;color:var(--ink-soft);font-size:.92rem;}
+
+  /* ---------- newsletter ---------- */
+  .cta{
+    border:var(--border-w) solid var(--ink);border-radius:14px;
+    background:var(--yellow);
+    padding:34px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    box-shadow:7px 7px 0 var(--ink);
+    color:#201a17;
+  }
+  .cta h3{font-size:1.4rem;}
+  .cta p{margin:6px 0 0;color:#4a3f38;}
+  .btn{
+    border:var(--border-w) solid var(--ink);border-radius:8px;
+    padding:11px 20px;font-weight:700;font-family:"Fredoka";
+    background:var(--ink);color:var(--paper);
+    text-decoration:none;display:inline-block;
+  }
+  .btn:hover{background:var(--red);color:#fff;}
+
+  .subscribe{display:flex;gap:10px;flex-wrap:wrap;}
+  .field{
+    border:var(--border-w) solid var(--ink);border-radius:8px;
+    padding:10px 14px;font-size:.95rem;background:#fff;color:var(--ink);
+    min-width:220px;flex:1;
+  }
+  html.dark .field{background:var(--paper-strong);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:var(--border-w) solid var(--ink);margin-top:40px;padding:30px 0;font-size:.85rem;color:var(--ink-soft);}
+  .footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  footer ul{list-style:none;display:flex;gap:16px;padding:0;margin:0;}
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--red);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#inicio">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Catálogo Snoopy</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#peliculas">Películas</a></li>
+      <li><a href="#datos">Datos</a></li>
+      <li><a href="#suscribete">Suscríbete</a></li>
+      <li><button class="theme-btn" id="themeToggle" aria-pressed="false">🌓 Modo</button></li>
+    </ul>
+  </div>
+</header>
+
+<section id="inicio" class="hero">
+  <div class="halftone"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="kicker-tag">Desde 1969</span>
+      <h1>El catálogo completo de las películas de Snoopy</h1>
+      <p class="lede">De los cines de los años 70 a los especiales de Apple TV+: cada largometraje y especial de Snoopy y la pandilla de Peanuts, en un solo lugar.</p>
+      <div class="speech-bubble">"Es curioso: para ser un perro que no habla, este beagle tiene una filmografía enorme."</div>
+    </div>
+    <div class="hero-panel">
+      <div class="rays" aria-hidden="true"></div>
+      <svg class="doghouse" viewBox="0 0 200 160" aria-hidden="true">
+        <polygon points="20,90 100,30 180,90" fill="#fff" stroke="#201a17" stroke-width="5" stroke-linejoin="round"/>
+        <rect x="30" y="88" width="140" height="60" fill="#fff" stroke="#201a17" stroke-width="5"/>
+        <ellipse cx="100" cy="128" rx="26" ry="20" fill="#201a17"/>
+        <circle cx="100" cy="20" r="9" fill="#f2b705" stroke="#201a17" stroke-width="4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="peliculas" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Filmografía</h2>
+    </div>
+    <p class="section-sub">Largometrajes de cine y especiales de streaming protagonizados por Snoopy, Charlie Brown y el resto de la pandilla.</p>
+    <div class="stripe"></div>
+
+    <div class="filters" role="group" aria-label="Filtrar por época">
+      <button class="filter-btn active" data-filter="all">Todas</button>
+      <button class="filter-btn" data-filter="clasica">Clásicas de cine (1969–1980)</button>
+      <button class="filter-btn" data-filter="3d">La era 3D</button>
+      <button class="filter-btn" data-filter="streaming">Especiales Apple TV+</button>
+    </div>
+
+    <div class="grid" id="movieGrid">
+
+      <article class="panel era-clasica" data-era="clasica">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Cine</span>
+          <div class="year">1969</div>
+        </div>
+        <div class="panel-body">
+          <h3>Un niño llamado Carlitos</h3>
+          <p>La primera película de Peanuts en la gran pantalla, dirigida por Bill Meléndez. Charlie Brown se enfrenta al concurso de deletreo de su vida mientras Snoopy sueña con ser campeón de patinaje sobre hielo.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Dirección: Bill Meléndez</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-clasica" data-era="clasica">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Cine</span>
+          <div class="year">1972</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy vuelve a casa</h3>
+          <p>Snoopy emprende un viaje para visitar a una vieja amiga enferma, dejando a Charlie Brown de vuelta en casa y a Woodstock como su único compañero de aventuras.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Dirección: Bill Meléndez</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-clasica" data-era="clasica">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Cine</span>
+          <div class="year">1977</div>
+        </div>
+        <div class="panel-body">
+          <h3>Carrera contrarreloj, Charlie Brown</h3>
+          <p>La pandilla se va de campamento de verano, donde Charlie Brown y sus amigos deben enfrentarse a un grupo de abusones... y a una peligrosa carrera en balsa por el río.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Dirección: Bill Meléndez</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-clasica" data-era="clasica">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Cine</span>
+          <div class="year">1980</div>
+        </div>
+        <div class="panel-body">
+          <h3>Buen viaje, Charlie Brown (¡y no vuelvas!)</h3>
+          <p>Un intercambio escolar lleva a Charlie Brown, Linus y Snoopy a Europa, donde terminan visitando lugares de memoria de las dos guerras mundiales durante su viaje de vuelta.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Dirección: Bill Meléndez</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-3d" data-era="3d">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Cine · 3D</span>
+          <div class="year">2015</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy y Charlie Brown: Peanuts, la película</h3>
+          <p>Snoopy se lanza a los cielos como as de la aviación para enfrentarse al Barón Rojo, mientras Charlie Brown intenta impresionar a la niña pelirroja. Primera película de la franquicia animada en 3D.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Dirección: Steve Martino</span><span><span class="dot"></span>Blue Sky Studios</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-streaming" data-era="streaming">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Apple TV+</span>
+          <div class="year">2021</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy Presents: For Auld Lang Syne</h3>
+          <p>Especial navideño de Año Nuevo en el que Lucy debe superar la noticia de que su mejor amiga se muda, justo antes de una gran fiesta.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Especial WildBrain</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-streaming" data-era="streaming">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Apple TV+</span>
+          <div class="year">2021</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy Presents: Welcome Home, Franklin</h3>
+          <p>Franklin se muda de ciudad y debe adaptarse a un nuevo colegio y nuevos amigos, con la pandilla de Peanuts ayudándolo a encontrar su lugar.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Especial WildBrain</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-streaming" data-era="streaming">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Apple TV+</span>
+          <div class="year">2022</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy Presents: To Mom (and Dad), With Love</h3>
+          <p>Un especial sobre distintos tipos de familia, contado a través de los ojos de Charlie Brown, Franklin, Peppermint Patty y Marcie.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Especial WildBrain</span></div>
+        </div>
+      </article>
+
+      <article class="panel era-streaming" data-era="streaming">
+        <div class="panel-top">
+          <div class="halftone"></div>
+          <span class="badge">Apple TV+</span>
+          <div class="year">2022</div>
+        </div>
+        <div class="panel-body">
+          <h3>Snoopy Presents: Lucy's School</h3>
+          <p>Lucy se convierte en maestra sustituta por un día y descubre que enseñar a sus amigos es mucho más difícil de lo que imaginaba.</p>
+          <div class="panel-meta"><span><span class="dot"></span>Especial WildBrain</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="datos" class="section" style="background:var(--paper-strong);border-top:var(--border-w) solid var(--ink);border-bottom:var(--border-w) solid var(--ink);">
+  <div class="wrap">
+    <div class="section-head"><h2>La franquicia en cifras</h2></div>
+    <p class="section-sub">Más de cinco décadas de Snoopy en la pantalla grande y en streaming.</p>
+    <div class="stripe"></div>
+    <div class="facts">
+      <div class="fact">
+        <div class="num">4</div>
+        <p>Largometrajes clásicos estrenados en cines entre 1969 y 1980.</p>
+      </div>
+      <div class="fact">
+        <div class="num">2015</div>
+        <p>Año del estreno de la primera película animada en 3D de la franquicia.</p>
+      </div>
+      <div class="fact">
+        <div class="num">Apple TV+</div>
+        <p>Plataforma donde continúa la serie de especiales "Snoopy Presents" desde 2021.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="suscribete" class="section">
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <h3>No te pierdas ningún estreno</h3>
+        <p>Recibe un aviso cada vez que se agregue una película o especial nuevo al catálogo.</p>
+      </div>
+      <form class="subscribe" onsubmit="return false;">
+        <label class="visually-hidden" for="email" style="position:absolute;left:-9999px;">Correo</label>
+        <input class="field" id="email" type="email" placeholder="tu@correo.com" required />
+        <button class="btn" type="submit">Suscribirme</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© <span id="year"></span> Catálogo Snoopy. Página de fans no oficial, sin fines comerciales.</p>
+    <ul>
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#peliculas">Películas</a></li>
+      <li><a href="#datos">Datos</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  // Tema oscuro/claro con persistencia
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('snoopy-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) root.classList.add('dark');
+  themeBtn.setAttribute('aria-pressed', root.classList.contains('dark'));
+
+  themeBtn.addEventListener('click', () => {
+    const isDark = root.classList.toggle('dark');
+    themeBtn.setAttribute('aria-pressed', String(isDark));
+    localStorage.setItem('snoopy-theme', isDark ? 'dark' : 'light');
+  });
+
+  // Menú móvil
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', String(open));
+  });
+
+  // Filtro por época
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const panels = document.querySelectorAll('#movieGrid .panel');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      panels.forEach(p => {
+        p.style.display = (filter === 'all' || p.dataset.era === filter) ? '' : 'none';
+      });
+    });
+  });
+
+  // Año en el footer
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
